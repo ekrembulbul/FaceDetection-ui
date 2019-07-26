@@ -13,34 +13,7 @@
   <property name="windowTitle">
    <string>Face Recognizer</string>
   </property>
-  <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
-      <y>60</y>
-      <width>81</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
-      <y>170</y>
-      <width>91</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-  </widget>
+  <widget class="QWidget" name="centralWidget"/>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -86,9 +59,7 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="qt_gui.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>actionExit</sender>
@@ -97,8 +68,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>220</x>
+     <y>108</y>
     </hint>
     <hint type="destinationlabel">
      <x>315</x>
@@ -107,4 +78,7 @@
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>updateLabel()</slot>
+ </slots>
 </ui>
