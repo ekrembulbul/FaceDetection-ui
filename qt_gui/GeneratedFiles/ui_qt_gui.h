@@ -50,10 +50,10 @@ public:
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        pushButton->setGeometry(QRect(210, 50, 75, 23));
+        pushButton->setGeometry(QRect(180, 60, 81, 31));
         label = new QLabel(centralWidget);
         label->setObjectName(QString::fromUtf8("label"));
-        label->setGeometry(QRect(220, 170, 47, 13));
+        label->setGeometry(QRect(180, 170, 91, 51));
         qt_guiClass->setCentralWidget(centralWidget);
         statusBar = new QStatusBar(qt_guiClass);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
@@ -77,7 +77,6 @@ public:
 
         retranslateUi(qt_guiClass);
         QObject::connect(actionExit, SIGNAL(triggered()), qt_guiClass, SLOT(close()));
-        QObject::connect(pushButton, SIGNAL(clicked()), label, SLOT(update()));
 
         QMetaObject::connectSlotsByName(qt_guiClass);
     } // setupUi
