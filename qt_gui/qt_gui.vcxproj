@@ -64,7 +64,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>D:\opencv\opencv-4.1.0\build\install\x64\vc15\lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_core410d.lib;opencv_face410d.lib;opencv_features2d410d.lib;opencv_flann410d.lib;opencv_gapi410d.lib;opencv_highgui410d.lib;opencv_imgcodecs410d.lib;opencv_imgproc410d.lib;opencv_ml410d.lib;opencv_objdetect410d.lib;opencv_photo410d.lib;opencv_stitching410d.lib;opencv_video410d.lib;opencv_videoio410d.lib;opencv_calib3d410d.lib;opencv_dnn410d.lib;qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_core410d.lib;opencv_face410d.lib;opencv_features2d410d.lib;opencv_flann410d.lib;opencv_gapi410d.lib;opencv_highgui410d.lib;opencv_imgcodecs410d.lib;opencv_imgproc410d.lib;opencv_ml410d.lib;opencv_objdetect410d.lib;opencv_photo410d.lib;opencv_stitching410d.lib;opencv_video410d.lib;opencv_videoio410d.lib;opencv_calib3d410d.lib;opencv_dnn410d.lib;qtmain.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>

@@ -3,6 +3,8 @@
 
 #include "ui_names.h"
 #include <QDialog>
+#include <map>
+#include <string>
 
 class names : public QDialog
 {
@@ -10,9 +12,10 @@ class names : public QDialog
 
 public:
     names(QWidget *parent = Q_NULLPTR);
-    Ui::names ui;
+	void createElements(int userCount, bool isFirstIn);
 
 private:
+    Ui::names ui;
 };
 
 #endif // NAMES_H

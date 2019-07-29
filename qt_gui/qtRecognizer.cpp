@@ -76,27 +76,22 @@ void recognizer::train(int userId)
 }
 
 
-void recognizer::multiTrain(int userCount)
+void recognizer::multiTrain(std::map<int, std::string> &idName)
 {
-	//int userCount = 0;
-	//std::cout << "Enter user count:" << std::endl;
-	//std::cin >> userCount;
-
-	//std::string tmpName;
-	//std::ofstream outFile("dataset/names.txt");
-	//for (int i = 0; i < userCount; i++)
-	//{
-	//	std::cin >> tmpName;
-	//	outFile << tmpName << std::endl;
-	//}
-	//outFile.close();
+	std::ofstream outFile("dataset/names.txt");
+	for (auto &i : idName)
+	{
+		outFile << i.first << ":" << i.second << std::endl;
+	}
+	outFile.close();
 	//std::cout << "[INFO] Training faces. It will take a few seconds. Wait..." << std::endl;
 
 	pics_t pics;
 	labels_t labels;
-	for (int i = 0; i < userCount; i++)
+	int count = 0;
+	for (auto &i : idName)
 	{
-		readPictures(i, userCount, pics, labels);
+		readPictures(i.first, count, pics, labels);
 	}
 
 	_model->train(pics, labels);
@@ -146,15 +141,25 @@ void recognizer::predictFromCam()
 }
 
 
-void recognizer::multiPredictFromCam(std::vector<std::string> &names)
+void recognizer::multiPredictFromCam()
 {
 	//std::cout << "[INFO] Initializing face capture. Look the camera..." << std::endl;
 	_model->read("trainer/multi_trainer.yml");
 
-	//std::vector<std::string> names;
-	//std::string tmpNames;
-	//std::ifstream inFile("dataset/names.txt");
-	//while (inFile >> tmpNames) names.push_back(tmpNames);
+	std::map<int, std::string> idName;
+	std::string tmpStr;
+	std::ifstream inFile("dataset/names.txt");
+	while (inFile >> tmpStr)
+	{
+		size_t found = tmpStr.find(":");
+		if (found != std::string::npos)
+		{
+			std::stringstream mFirst(std::string(tmpStr.substr(0, found)));
+			int mFirstInt;
+			mFirst >> mFirstInt;
+			idName.insert({ mFirstInt, tmpStr.substr(found + 1) });
+		}
+	}
 
 	cv::Mat frame;
 	cv::VideoCapture cap(0);
@@ -181,7 +186,7 @@ void recognizer::multiPredictFromCam(std::vector<std::string> &names)
 
 			int threshold = 60;
 			std::string s;
-			if (conf < threshold) s = names[label];
+			if (conf < threshold) s = idName[label];
 			else s = "unknown";
 
 			cv::HersheyFonts font = cv::FONT_HERSHEY_SIMPLEX;
@@ -266,7 +271,11 @@ void recognizer::readPictures(int userId, int &count, pics_t &pics, labels_t &la
 		std::stringstream fileName;
 		fileName << "dataset/user" << userId << "." << count << ".jpg";
 		cv::Mat pic = cv::imread(fileName.str(), cv::IMREAD_GRAYSCALE);
-		if (pic.data == NULL) return;
+		if (pic.data == NULL)
+		{
+			count = 0;
+			return;
+		}
 
 		pics.push_back(pic);
 		labels.push_back(userId);

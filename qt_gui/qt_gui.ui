@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>599</width>
-    <height>433</height>
+    <width>330</width>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -148,19 +148,6 @@
      <string>Multi Predict from Cam</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="predImage">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>270</y>
-      <width>121</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Predict from Image</string>
-    </property>
-   </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
@@ -168,7 +155,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>599</width>
+     <width>330</width>
      <height>21</height>
     </rect>
    </property>
