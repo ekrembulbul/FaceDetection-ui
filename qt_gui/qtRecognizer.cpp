@@ -1,11 +1,11 @@
-#include "pch.h"
-#include "recognizer.h"
+#include "qtRecognizer.h"
 
 
 namespace
 {
 	const int escKey = 27;
 	const int spaceKey = 32;
+	const int waitFrame = 35;
 }
 
 
@@ -29,20 +29,20 @@ void recognizer::loadXml(std::string fileName)
 }
 
 
-void recognizer::takePicture()
+void recognizer::takePicture(int userId)
 {
 	cv::Mat frame;
 	cv::VideoCapture cap(0);
 	std::string winName("Cam");
 
-	int userId;
+	//int userId;
 	int count = 0;
-	std::cout << "Enter user id:" << std::endl;
-	std::cin >> userId;
-	std::cout << "[INFO] Initializing face capture. Look the camera and press space..." << std::endl;
+	//std::cout << "Enter user id:" << std::endl;
+	//std::cin >> userId;
+	//std::cout << "[INFO] Initializing face capture. Look the camera and press space..." << std::endl;
 
 	cv::namedWindow(winName);
-	int key = cv::waitKey(40);
+	int key = cv::waitKey(waitFrame);
 	while (key != escKey)
 	{
 		cap >> frame;
@@ -50,64 +50,65 @@ void recognizer::takePicture()
 		detectFace(frame, userId, count, key == spaceKey);
 
 		cv::imshow(winName, frame);
-		key = cv::waitKey(40);
+		key = cv::waitKey(waitFrame);
 	}
 
-	std::cout << "[INFO] Face capture is done." << std::endl;
+	//std::cout << "[INFO] Face capture is done." << std::endl;
 	cap.release();
 	cv::destroyWindow(winName);
 }
 
 
-void recognizer::train()
+void recognizer::train(int userId)
 {
-	int userId;
-	std::cout << "Enter user id:" << std::endl;
-	std::cin >> userId;
-	std::cout << "[INFO] Training faces. It will take a few seconds. Wait..." << std::endl;
+	//int userId;
+	//std::cout << "Enter user id:" << std::endl;
+	//std::cin >> userId;
+	//std::cout << "[INFO] Training faces. It will take a few seconds. Wait..." << std::endl;
 
 	pics_t pics;
 	labels_t labels;
-	readPictures(userId, pics, labels);
+	int userCount = 0;
+	readPictures(userId, userCount, pics, labels);
 	_model->train(pics, labels);
 	_model->write("trainer/trainer.yml");
-	std::cout << "[INFO] " << pics.size() << " faces trained." << std::endl;
+	//std::cout << "[INFO] " << pics.size() << " faces trained." << std::endl;
 }
 
 
-void recognizer::multiTrain()
+void recognizer::multiTrain(int userCount)
 {
-	int userCount = 0;
-	std::cout << "Enter user count:" << std::endl;
-	std::cin >> userCount;
+	//int userCount = 0;
+	//std::cout << "Enter user count:" << std::endl;
+	//std::cin >> userCount;
 
-	std::string tmpName;
-	std::ofstream outFile("dataset/names.txt");
-	for (int i = 0; i < userCount; i++)
-	{
-		std::cin >> tmpName;
-		outFile << tmpName << std::endl;
-	}
-	outFile.close();
-	std::cout << "[INFO] Training faces. It will take a few seconds. Wait..." << std::endl;
+	//std::string tmpName;
+	//std::ofstream outFile("dataset/names.txt");
+	//for (int i = 0; i < userCount; i++)
+	//{
+	//	std::cin >> tmpName;
+	//	outFile << tmpName << std::endl;
+	//}
+	//outFile.close();
+	//std::cout << "[INFO] Training faces. It will take a few seconds. Wait..." << std::endl;
 
 	pics_t pics;
 	labels_t labels;
 	for (int i = 0; i < userCount; i++)
 	{
-		readPictures(i, pics, labels);
+		readPictures(i, userCount, pics, labels);
 	}
 
 	_model->train(pics, labels);
 	_model->write("trainer/multi_trainer.yml");
 
-	std::cout << "[INFO] " << pics.size() << " faces trained." << std::endl;
+	//std::cout << "[INFO] " << pics.size() << " faces trained." << std::endl;
 }
 
 
 void recognizer::predictFromCam()
 {
-	std::cout << "[INFO] Initializing face capture. Look the camera..." << std::endl;
+	//std::cout << "[INFO] Initializing face capture. Look the camera..." << std::endl;
 	_model->read("trainer/trainer.yml");
 
 	cv::Mat frame;
@@ -116,7 +117,7 @@ void recognizer::predictFromCam()
 	cv::HersheyFonts font = cv::FONT_HERSHEY_SIMPLEX;
 
 	cv::namedWindow(winName);
-	while (cv::waitKey(40) != escKey)
+	while (cv::waitKey(waitFrame) != escKey)
 	{
 		cap >> frame;
 
@@ -139,28 +140,28 @@ void recognizer::predictFromCam()
 		cv::imshow(winName, frame);
 	}
 
-	std::cout << "[INFO] Prediction done." << std::endl;
+	//std::cout << "[INFO] Prediction done." << std::endl;
 	cap.release();
 	cv::destroyWindow(winName);
 }
 
 
-void recognizer::multiPredictFromCam()
+void recognizer::multiPredictFromCam(std::vector<std::string> &names)
 {
-	std::cout << "[INFO] Initializing face capture. Look the camera..." << std::endl;
+	//std::cout << "[INFO] Initializing face capture. Look the camera..." << std::endl;
 	_model->read("trainer/multi_trainer.yml");
 
-	std::vector<std::string> names;
-	std::string tmpNames;
-	std::ifstream inFile("dataset/names.txt");
-	while (inFile >> tmpNames) names.push_back(tmpNames);
+	//std::vector<std::string> names;
+	//std::string tmpNames;
+	//std::ifstream inFile("dataset/names.txt");
+	//while (inFile >> tmpNames) names.push_back(tmpNames);
 
 	cv::Mat frame;
 	cv::VideoCapture cap(0);
 	std::string winName("Multi Predict");
 	cv::namedWindow(winName);
 
-	while (cv::waitKey(40) != escKey)
+	while (cv::waitKey(waitFrame) != escKey)
 	{
 		cap >> frame;
 
@@ -190,7 +191,7 @@ void recognizer::multiPredictFromCam()
 		cv::imshow(winName, frame);
 	}
 
-	std::cout << "[INFO] Multi prediction done." << std::endl;
+	//std::cout << "[INFO] Multi prediction done." << std::endl;
 	cap.release();
 	cv::destroyAllWindows();
 }
@@ -198,7 +199,7 @@ void recognizer::multiPredictFromCam()
 
 void recognizer::predictFromImage()
 {
-	std::cout << "[INFO] Predicting faces. It will take a few seconds. Wait..." << std::endl;
+	//std::cout << "[INFO] Predicting faces. It will take a few seconds. Wait..." << std::endl;
 	_model->read("trainer/trainer.yml");
 
 	std::multimap<double, int> confs;
@@ -224,11 +225,11 @@ void recognizer::predictFromImage()
 		count++;
 	}
 
-	for (auto &i: confs)
-	{
-		std::cout << i.second << ". " << i.first << std::endl;
-	}
-	std::cout << "[INFO] Prediction done." << std::endl;
+	//for (auto &i: confs)
+	//{
+	//	std::cout << i.second << ". " << i.first << std::endl;
+	//}
+	//std::cout << "[INFO] Prediction done." << std::endl;
 }
 
 
@@ -250,7 +251,7 @@ void recognizer::detectFace(cv::Mat &src, int id, int &count, bool saveFace)
 		if (saveFace)
 		{
 			std::stringstream fileName;
-			fileName << "dataset/user" << id << "." << count + ".jpg";
+			fileName << "dataset/user" << id << "." << count << ".jpg";
 			cv::imwrite(fileName.str(), cv::Mat(gray, face));
 			count++;
 		}
@@ -258,13 +259,12 @@ void recognizer::detectFace(cv::Mat &src, int id, int &count, bool saveFace)
 }
 
 
-void recognizer::readPictures(int userId, pics_t &pics, labels_t &labels)
+void recognizer::readPictures(int userId, int &count, pics_t &pics, labels_t &labels)
 {
-	int count = 0;
 	while (true)
 	{
 		std::stringstream fileName;
-		fileName << "dataset/user" << userId << "." + count << ".jpg";
+		fileName << "dataset/user" << userId << "." << count << ".jpg";
 		cv::Mat pic = cv::imread(fileName.str(), cv::IMREAD_GRAYSCALE);
 		if (pic.data == NULL) return;
 

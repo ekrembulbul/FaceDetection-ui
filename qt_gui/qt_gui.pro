@@ -16,3 +16,12 @@ OBJECTS_DIR += debug
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(qt_gui.pri)
+
+FORMS += \
+    names.ui
+
+HEADERS += \
+    names.h
+
+SOURCES += \
+    names.cpp

@@ -8,4 +8,4 @@ int main(int argc, char *argv[])
 	qt_gui w;
 	w.show();
 	return a.exec();
-}
+} 

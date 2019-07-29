@@ -11,12 +11,12 @@ public:
 	recognizer();
 	~recognizer();
 	void loadXml(std::string fileName);
-	void takePicture();
-	void train();
+	void takePicture(int userId);
+	void train(int userId);
+	void multiTrain(int userCount);
 	void predictFromCam();
 	void predictFromImage();
-	void multiTrain();
-	void multiPredictFromCam();
+	void multiPredictFromCam(std::vector<std::string> &names);
 
 private:
 	cv::CascadeClassifier _faceCascade;
@@ -26,5 +26,5 @@ private:
 	using faces_t = std::vector<cv::Rect>;
 
 	void detectFace(cv::Mat &src, int id, int &count, bool saveFace);
-	void readPictures(int userId, pics_t &pics, labels_t &labels);
+	void readPictures(int userId, int &count, pics_t &pics, labels_t &labels);
 };
