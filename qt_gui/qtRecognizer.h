@@ -20,7 +20,7 @@ public:
 	void multiTrain(std::map<int, std::string> &idName);
 	void predictFromCam();
 	void multiPredictFromCam();
-	void predictFromImage();
+	//void predictFromImage();
 
 private:
 	void detectFace(cv::Mat &src, int id, int &count, bool saveFace);

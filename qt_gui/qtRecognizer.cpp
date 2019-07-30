@@ -35,13 +35,9 @@ void recognizer::takePicture(int userId)
 	cv::VideoCapture cap(0);
 	std::string winName("Cam");
 
-	//int userId;
 	int count = 0;
-	//std::cout << "Enter user id:" << std::endl;
-	//std::cin >> userId;
-	//std::cout << "[INFO] Initializing face capture. Look the camera and press space..." << std::endl;
-
 	cv::namedWindow(winName);
+
 	int key = cv::waitKey(waitFrame);
 	while (key != escKey)
 	{
@@ -53,7 +49,6 @@ void recognizer::takePicture(int userId)
 		key = cv::waitKey(waitFrame);
 	}
 
-	//std::cout << "[INFO] Face capture is done." << std::endl;
 	cap.release();
 	cv::destroyWindow(winName);
 }
@@ -61,18 +56,12 @@ void recognizer::takePicture(int userId)
 
 void recognizer::train(int userId)
 {
-	//int userId;
-	//std::cout << "Enter user id:" << std::endl;
-	//std::cin >> userId;
-	//std::cout << "[INFO] Training faces. It will take a few seconds. Wait..." << std::endl;
-
 	pics_t pics;
 	labels_t labels;
 	int userCount = 0;
 	readPictures(userId, userCount, pics, labels);
 	_model->train(pics, labels);
 	_model->write("trainer/trainer.yml");
-	//std::cout << "[INFO] " << pics.size() << " faces trained." << std::endl;
 }
 
 
@@ -84,7 +73,6 @@ void recognizer::multiTrain(std::map<int, std::string> &idName)
 		outFile << i.first << ":" << i.second << std::endl;
 	}
 	outFile.close();
-	//std::cout << "[INFO] Training faces. It will take a few seconds. Wait..." << std::endl;
 
 	pics_t pics;
 	labels_t labels;
@@ -96,14 +84,11 @@ void recognizer::multiTrain(std::map<int, std::string> &idName)
 
 	_model->train(pics, labels);
 	_model->write("trainer/multi_trainer.yml");
-
-	//std::cout << "[INFO] " << pics.size() << " faces trained." << std::endl;
 }
 
 
 void recognizer::predictFromCam()
 {
-	//std::cout << "[INFO] Initializing face capture. Look the camera..." << std::endl;
 	_model->read("trainer/trainer.yml");
 
 	cv::Mat frame;
@@ -135,7 +120,6 @@ void recognizer::predictFromCam()
 		cv::imshow(winName, frame);
 	}
 
-	//std::cout << "[INFO] Prediction done." << std::endl;
 	cap.release();
 	cv::destroyWindow(winName);
 }
@@ -143,7 +127,6 @@ void recognizer::predictFromCam()
 
 void recognizer::multiPredictFromCam()
 {
-	//std::cout << "[INFO] Initializing face capture. Look the camera..." << std::endl;
 	_model->read("trainer/multi_trainer.yml");
 
 	std::map<int, std::string> idName;
@@ -196,12 +179,11 @@ void recognizer::multiPredictFromCam()
 		cv::imshow(winName, frame);
 	}
 
-	//std::cout << "[INFO] Multi prediction done." << std::endl;
 	cap.release();
 	cv::destroyAllWindows();
 }
 
-
+/*
 void recognizer::predictFromImage()
 {
 	//std::cout << "[INFO] Predicting faces. It will take a few seconds. Wait..." << std::endl;
@@ -236,7 +218,7 @@ void recognizer::predictFromImage()
 	//}
 	//std::cout << "[INFO] Prediction done." << std::endl;
 }
-
+*/
 
 //private
 
