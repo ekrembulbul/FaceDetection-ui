@@ -14,7 +14,7 @@ class recognizer
 public:
 	recognizer();
 	~recognizer();
-	void loadXml(std::string fileName);
+	void loadXml(std::string &fileName);
 	void takePicture(int userId);
 	void train(int userId);
 	void multiTrain(std::map<int, std::string> &idName);

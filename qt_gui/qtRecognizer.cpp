@@ -23,7 +23,7 @@ recognizer::~recognizer()
 }
 
 
-void recognizer::loadXml(std::string fileName)
+void recognizer::loadXml(std::string &fileName)
 {
 	_faceCascade.load(fileName);
 }

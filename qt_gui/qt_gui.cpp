@@ -8,7 +8,7 @@ qt_gui::qt_gui(QWidget *parent)
 	: QMainWindow(parent), _isFirstIn(true)
 {
 	ui.setupUi(this);
-	_r.loadXml("haarcascade-frontalface-default.xml");
+	_r.loadXml(std::string("haarcascade-frontalface-default.xml"));
 }
 
 
