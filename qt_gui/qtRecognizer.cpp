@@ -13,8 +13,9 @@ namespace
 
 
 recognizer::recognizer() :
-	_model(cv::face::LBPHFaceRecognizer::create())
+	_model(cv::face::LBPHFaceRecognizer::create()), _isThreadRunning(true)
 {
+	loadXml(std::string("haarcascade-frontalface-default.xml"));
 }
 
 
@@ -29,6 +30,21 @@ void recognizer::loadXml(std::string &fileName)
 }
 
 
+void recognizer::startTakePicture(int userId)
+{
+	if (_t.joinable()) _t.join();
+	_isThreadRunning = true;
+	_t = std::thread(&recognizer::takePicture, this, userId);
+}
+
+
+void recognizer::stopTakePicture()
+{
+	_isThreadRunning = false;
+}
+
+
+// private
 void recognizer::takePicture(int userId)
 {
 	cv::Mat frame;
@@ -39,7 +55,7 @@ void recognizer::takePicture(int userId)
 	cv::namedWindow(winName);
 
 	int key = cv::waitKey(waitFrame);
-	while (key != escKey)
+	while (_isThreadRunning)
 	{
 		cap >> frame;
 
@@ -54,6 +70,14 @@ void recognizer::takePicture(int userId)
 }
 
 
+void recognizer::startTrain(int userId)
+{
+	if (_t.joinable()) _t.join();
+	_t = std::thread(&recognizer::train, this, userId);
+}
+
+
+// private
 void recognizer::train(int userId)
 {
 	pics_t pics;
@@ -65,6 +89,14 @@ void recognizer::train(int userId)
 }
 
 
+void recognizer::startMultiTrain(std::map<int, std::string> &idName)
+{
+	if (_t.joinable()) _t.join();
+	_t = std::thread(&recognizer::multiTrain, this, idName);
+}
+
+
+// private
 void recognizer::multiTrain(std::map<int, std::string> &idName)
 {
 	std::ofstream outFile("dataset/names.txt");
@@ -87,6 +119,21 @@ void recognizer::multiTrain(std::map<int, std::string> &idName)
 }
 
 
+void recognizer::startPredictFromCam()
+{
+	if (_t.joinable()) _t.join();
+	_isThreadRunning = true;
+	_t = std::thread(&recognizer::predictFromCam, this);
+}
+
+
+void recognizer::stopPredictFromCam()
+{
+	_isThreadRunning = false;
+}
+
+
+// private
 void recognizer::predictFromCam()
 {
 	_model->read("trainer/trainer.yml");
@@ -97,7 +144,7 @@ void recognizer::predictFromCam()
 	cv::HersheyFonts font = cv::FONT_HERSHEY_SIMPLEX;
 
 	cv::namedWindow(winName);
-	while (cv::waitKey(waitFrame) != escKey)
+	while (_isThreadRunning)
 	{
 		cap >> frame;
 
@@ -125,6 +172,21 @@ void recognizer::predictFromCam()
 }
 
 
+void recognizer::startMultiPredictFromCam()
+{
+	if (_t.joinable()) _t.join();
+	_isThreadRunning = true;
+	_t = std::thread(&recognizer::predictFromCam, this);
+}
+
+
+void recognizer::stopMultiPredictFromCam()
+{
+	_isThreadRunning = false;
+}
+
+
+//private
 void recognizer::multiPredictFromCam()
 {
 	_model->read("trainer/multi_trainer.yml");
@@ -149,7 +211,7 @@ void recognizer::multiPredictFromCam()
 	std::string winName("Multi Predict");
 	cv::namedWindow(winName);
 
-	while (cv::waitKey(waitFrame) != escKey)
+	while (_isThreadRunning)
 	{
 		cap >> frame;
 

@@ -5,34 +5,55 @@
 
 
 qt_gui::qt_gui(QWidget *parent)
-	: QMainWindow(parent), _isFirstIn(true)
+	: QMainWindow(parent), _isFirstInNameDialog(true)
 {
 	ui.setupUi(this);
-	_r.loadXml(std::string("haarcascade-frontalface-default.xml"));
 }
 
 
-void qt_gui::on_takePicture_clicked()
+void qt_gui::on_takePictureStart_clicked()
 {
+	ui.takePictureStart->setEnabled(false);
+	ui.trainStart->setEnabled(false);
+	ui.mTrainStart->setEnabled(false);
+	ui.predCamStart->setEnabled(false);
+	ui.predCamStop->setEnabled(false);
+	ui.multiPredCamStart->setEnabled(false);
+	ui.multiPredCamStop->setEnabled(false);
+
 	int userId = ui.userIdInput->value();
-	_r.takePicture(userId);
+	_r.startTakePicture(userId);
 }
 
 
-void qt_gui::on_train_clicked()
+void qt_gui::on_takePictureStop_clicked()
+{
+	_r.stopTakePicture();
+
+	ui.takePictureStart->setEnabled(true);
+	ui.trainStart->setEnabled(true);
+	ui.mTrainStart->setEnabled(true);
+	ui.predCamStart->setEnabled(true);
+	ui.predCamStop->setEnabled(true);
+	ui.multiPredCamStart->setEnabled(true);
+	ui.multiPredCamStop->setEnabled(true);
+}
+
+
+void qt_gui::on_trainStart_clicked()
 {
 	int userId = ui.userIdInputTrain->value();
-	_r.train(userId);
+	_r.startTrain(userId);
 }
 
 
-void qt_gui::on_mTrain_clicked()
+void qt_gui::on_mTrainStart_clicked()
 {
 	int userCount = ui.userCountInMTrain->value();
 	if (userCount > 1)
 	{
-		_n.createElements(userCount, _isFirstIn);
-		_isFirstIn = false;
+		_n.createElements(userCount, _isFirstInNameDialog);
+		_isFirstInNameDialog = false;
 		_n.setModal(true);
 		_n.show();
 		takeResultAndTrain(_n.exec(), userCount);
@@ -40,15 +61,27 @@ void qt_gui::on_mTrain_clicked()
 }
 
 
-void qt_gui::on_predCam_clicked()
+void qt_gui::on_predCamStart_clicked()
 {
-	_r.predictFromCam();
+	_r.startPredictFromCam();
 }
 
 
-void qt_gui::on_multiPredCam_clicked()
+void qt_gui::on_predCamStop_clicked()
 {
-	_r.multiPredictFromCam();
+	_r.stopPredictFromCam();
+}
+
+
+void qt_gui::on_multiPredCamStart_clicked()
+{
+	_r.startMultiPredictFromCam();
+}
+
+
+void qt_gui::on_multiPredCamStop_clicked()
+{
+	_r.stopMultiPredictFromCam();
 }
 
 
@@ -72,6 +105,6 @@ void qt_gui::takeResultAndTrain(int dlgCode, int userCount)
 			std::string name = _n.findChild<QLineEdit*>(QString::fromStdString(sName.str()))->text().toStdString();
 			idName.insert({ id, name });
 		}
-		_r.multiTrain(idName);
+		_r.startMultiTrain(idName);
 	}
 }

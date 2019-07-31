@@ -14,11 +14,14 @@ public:
 	qt_gui(QWidget *parent = Q_NULLPTR);
 
 private slots:
-    void on_takePicture_clicked();
-    void on_train_clicked();
-    void on_mTrain_clicked();
-    void on_predCam_clicked();
-    void on_multiPredCam_clicked();
+    void on_trainStart_clicked();
+    void on_mTrainStart_clicked();
+    void on_takePictureStop_clicked();
+    void on_takePictureStart_clicked();
+    void on_predCamStart_clicked();
+    void on_predCamStop_clicked();
+    void on_multiPredCamStart_clicked();
+    void on_multiPredCamStop_clicked();
 
 private:
 	Ui::qt_guiClass ui;
@@ -26,5 +29,5 @@ private:
 
 	recognizer _r;
 	names _n;
-	bool _isFirstIn;
+	bool _isFirstInNameDialog;
 };
