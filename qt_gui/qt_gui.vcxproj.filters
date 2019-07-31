@@ -50,6 +50,9 @@
     <QtMoc Include="names.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="qtRecognizer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="qt_gui.ui">
@@ -63,10 +66,5 @@
     <QtRcc Include="qt_gui.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="qtRecognizer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

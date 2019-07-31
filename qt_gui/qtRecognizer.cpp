@@ -1,4 +1,7 @@
 #include "qtRecognizer.h"
+#include <QImage>
+#include <qdebug.h>
+#include <Windows.h>
 
 
 namespace
@@ -12,8 +15,8 @@ namespace
 //public
 
 
-recognizer::recognizer() :
-	_model(cv::face::LBPHFaceRecognizer::create()), _isThreadRunning(true)
+recognizer::recognizer(QObject *parent) :
+	QObject(parent), _model(cv::face::LBPHFaceRecognizer::create()), _isThreadRunning(true)
 {
 	loadXml(std::string("haarcascade-frontalface-default.xml"));
 }
@@ -21,6 +24,7 @@ recognizer::recognizer() :
 
 recognizer::~recognizer()
 {
+	if (_t.joinable()) _t.join();
 }
 
 
@@ -49,24 +53,25 @@ void recognizer::takePicture(int userId)
 {
 	cv::Mat frame;
 	cv::VideoCapture cap(0);
-	std::string winName("Cam");
 
 	int count = 0;
-	cv::namedWindow(winName);
 
 	int key = cv::waitKey(waitFrame);
 	while (_isThreadRunning)
 	{
 		cap >> frame;
-
 		detectFace(frame, userId, count, key == spaceKey);
 
-		cv::imshow(winName, frame);
+		QImage image = QImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+
+		qDebug() << __FUNCTION__" :" << GetCurrentThreadId();
+		                            
+		emit readyImage(image);
+
 		key = cv::waitKey(waitFrame);
 	}
 
 	cap.release();
-	cv::destroyWindow(winName);
 }
 
 

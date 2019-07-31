@@ -2,25 +2,21 @@
 #include "names.h"
 #include <map>
 #include <string>
+#include <qdebug.h>
+#include <Windows.h>
 
 
 qt_gui::qt_gui(QWidget *parent)
 	: QMainWindow(parent), _isFirstInNameDialog(true)
 {
 	ui.setupUi(this);
+	//qRegisterMetaType<QImage>("QImage");
+	connect(&_r, &recognizer::readyImage, this, &qt_gui::drawImage);
 }
 
 
 void qt_gui::on_takePictureStart_clicked()
 {
-	ui.takePictureStart->setEnabled(false);
-	ui.trainStart->setEnabled(false);
-	ui.mTrainStart->setEnabled(false);
-	ui.predCamStart->setEnabled(false);
-	ui.predCamStop->setEnabled(false);
-	ui.multiPredCamStart->setEnabled(false);
-	ui.multiPredCamStop->setEnabled(false);
-
 	int userId = ui.userIdInput->value();
 	_r.startTakePicture(userId);
 }
@@ -29,14 +25,13 @@ void qt_gui::on_takePictureStart_clicked()
 void qt_gui::on_takePictureStop_clicked()
 {
 	_r.stopTakePicture();
+}
 
-	ui.takePictureStart->setEnabled(true);
-	ui.trainStart->setEnabled(true);
-	ui.mTrainStart->setEnabled(true);
-	ui.predCamStart->setEnabled(true);
-	ui.predCamStop->setEnabled(true);
-	ui.multiPredCamStart->setEnabled(true);
-	ui.multiPredCamStop->setEnabled(true);
+
+void qt_gui::drawImage(const QImage &image)
+{
+	qDebug() << __FUNCTION__" :" << GetCurrentThreadId();
+	ui.videoLabel->setPixmap(QPixmap::fromImage(image));                
 }
 
 

@@ -2,7 +2,6 @@
 #define NAMES_H
 
 #include "ui_names.h"
-#include <QDialog>
 #include <map>
 #include <string>
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <QtWidgets/QMainWindow>
 #include "ui_qt_gui.h"
 #include "qtRecognizer.h"
 #include "names.h"
@@ -12,6 +11,10 @@ class qt_gui : public QMainWindow
 
 public:
 	qt_gui(QWidget *parent = Q_NULLPTR);
+
+
+public slots:
+	void drawImage(const QImage &image);
 
 private slots:
     void on_trainStart_clicked();

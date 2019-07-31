@@ -4,16 +4,19 @@
 #include <opencv2/face.hpp>
 #include <vector>
 #include <atomic>
+#include <QObject>
 
 
-class recognizer
+class recognizer : public QObject
 {
+	Q_OBJECT
+
 	using pics_t = std::vector<cv::Mat>;
 	using labels_t = std::vector<int>;
 	using faces_t = std::vector<cv::Rect>;
 
 public:
-	recognizer();
+	recognizer(QObject *parent = Q_NULLPTR);
 	~recognizer();
 	void loadXml(std::string &fileName);
 	void startTakePicture(int userId);
@@ -24,6 +27,9 @@ public:
 	void stopPredictFromCam();
 	void startMultiPredictFromCam();
 	void stopMultiPredictFromCam();
+
+signals:
+	void readyImage(const QImage &image);
 
 	//void predictFromImage();
 
