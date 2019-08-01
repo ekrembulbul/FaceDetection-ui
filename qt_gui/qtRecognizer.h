@@ -32,6 +32,9 @@ public:
 signals:
 	void readyImage(cv::Mat frame);
 	void signalStopTrain();
+	void signalGuiEnable();
+	void signalStatePred();
+	void signalStateMultiPred();
 
 public slots:
 	void stopTrain();

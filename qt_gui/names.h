@@ -11,7 +11,7 @@ class names : public QDialog
 
 public:
     names(QWidget *parent = Q_NULLPTR);
-	void createElements(int userCount, bool isFirstIn);
+	void createElements(int userCount);
 
 private:
     Ui::names ui;

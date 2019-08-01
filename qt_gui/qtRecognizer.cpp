@@ -80,7 +80,7 @@ void recognizer::startTrain(int userId)
 void recognizer::stopTrain()
 {
 	if (_t.joinable()) _t.join();
-	emit 
+	emit signalGuiEnable();
 	qDebug() << __FUNCTION__ ": " << GetCurrentThreadId();
 }
 
@@ -149,6 +149,7 @@ void recognizer::stopPredictFromCam()
 void recognizer::predictFromCam()
 {
 	_model->read("trainer/trainer.yml");
+	emit signalStatePred();
 
 	cv::Mat frame;
 	cv::VideoCapture cap(0);
@@ -200,6 +201,7 @@ void recognizer::stopMultiPredictFromCam()
 void recognizer::multiPredictFromCam()
 {
 	_model->read("trainer/multi_trainer.yml");
+	emit signalStateMultiPred();
 
 	std::map<int, std::string> idName;
 	std::string tmpStr;

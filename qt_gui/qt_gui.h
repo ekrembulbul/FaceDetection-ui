@@ -6,6 +6,9 @@
 #include "QImage"
 
 
+enum states { INIT, NORMAL, TAKE_PICTURE, DISABLE, PRED, MULTI_PRED };
+
+
 class qt_gui : public QMainWindow
 {
 	Q_OBJECT
@@ -16,7 +19,9 @@ public:
 
 public slots:
 	void drawImage(cv::Mat frame);
-	void on_trainStop();
+	void guiEnabled();
+	void slotStatePred();
+	void slotStateMultiPred();
 
 private slots:
     void on_trainStart_clicked();
@@ -30,9 +35,15 @@ private slots:
 
 private:
 	Ui::qt_guiClass ui;
-	void takeResultAndTrain(int dlgCode, int userCount);
+	void takeResultAndTrain(int dlgCode, int userCount, names &n);
+	void setState(states state);
+	void stateTrain();
+	void stateNormal();
+	void stateInit();
+	void stateTakePicture();
+	void statePred();
+	void stateMultiPred();
+	void setEnabledButtons(bool e);
 
 	recognizer _r;
-	names _n;
-	bool _isFirstInNameDialog;
 };
