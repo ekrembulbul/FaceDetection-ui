@@ -1,5 +1,4 @@
 #include "qtRecognizer.h"
-#include <QImage>
 #include <qdebug.h>
 #include <Windows.h>
 
@@ -19,12 +18,12 @@ recognizer::recognizer(QObject *parent) :
 	QObject(parent), _model(cv::face::LBPHFaceRecognizer::create()), _isThreadRunning(true)
 {
 	loadXml(std::string("haarcascade-frontalface-default.xml"));
+	connect(this, &recognizer::signalStopTrain, this, &recognizer::stopTrain);
 }
 
 
 recognizer::~recognizer()
 {
-	if (_t.joinable()) _t.join();
 }
 
 
@@ -36,7 +35,6 @@ void recognizer::loadXml(std::string &fileName)
 
 void recognizer::startTakePicture(int userId)
 {
-	if (_t.joinable()) _t.join();
 	_isThreadRunning = true;
 	_t = std::thread(&recognizer::takePicture, this, userId);
 }
@@ -45,6 +43,7 @@ void recognizer::startTakePicture(int userId)
 void recognizer::stopTakePicture()
 {
 	_isThreadRunning = false;
+	if (_t.joinable()) _t.join();
 }
 
 
@@ -62,23 +61,27 @@ void recognizer::takePicture(int userId)
 		cap >> frame;
 		detectFace(frame, userId, count, key == spaceKey);
 
-		QImage image = QImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
-
-		qDebug() << __FUNCTION__" :" << GetCurrentThreadId();
-		                            
-		emit readyImage(image);
+		emit readyImage(frame);
+		                   
 
 		key = cv::waitKey(waitFrame);
 	}
 
+	emit readyImage(cv::Mat());
 	cap.release();
 }
 
 
 void recognizer::startTrain(int userId)
 {
-	if (_t.joinable()) _t.join();
 	_t = std::thread(&recognizer::train, this, userId);
+}
+
+void recognizer::stopTrain()
+{
+	if (_t.joinable()) _t.join();
+	emit 
+	qDebug() << __FUNCTION__ ": " << GetCurrentThreadId();
 }
 
 
@@ -91,12 +94,14 @@ void recognizer::train(int userId)
 	readPictures(userId, userCount, pics, labels);
 	_model->train(pics, labels);
 	_model->write("trainer/trainer.yml");
+
+	emit signalStopTrain();
+	qDebug() << __FUNCTION__ ": " << GetCurrentThreadId();
 }
 
 
 void recognizer::startMultiTrain(std::map<int, std::string> &idName)
 {
-	if (_t.joinable()) _t.join();
 	_t = std::thread(&recognizer::multiTrain, this, idName);
 }
 
@@ -121,12 +126,13 @@ void recognizer::multiTrain(std::map<int, std::string> &idName)
 
 	_model->train(pics, labels);
 	_model->write("trainer/multi_trainer.yml");
+
+	emit signalStopTrain();
 }
 
 
 void recognizer::startPredictFromCam()
 {
-	if (_t.joinable()) _t.join();
 	_isThreadRunning = true;
 	_t = std::thread(&recognizer::predictFromCam, this);
 }
@@ -135,6 +141,7 @@ void recognizer::startPredictFromCam()
 void recognizer::stopPredictFromCam()
 {
 	_isThreadRunning = false;
+	if (_t.joinable()) _t.join();
 }
 
 
@@ -145,10 +152,8 @@ void recognizer::predictFromCam()
 
 	cv::Mat frame;
 	cv::VideoCapture cap(0);
-	std::string winName("Predict");
 	cv::HersheyFonts font = cv::FONT_HERSHEY_SIMPLEX;
 
-	cv::namedWindow(winName);
 	while (_isThreadRunning)
 	{
 		cap >> frame;
@@ -169,25 +174,25 @@ void recognizer::predictFromCam()
 			cv::putText(frame, std::to_string(conf), cv::Point(face.x + 5, face.y - 5), font, 1, (0, 0, 255), 2);
 		}
 		
-		cv::imshow(winName, frame);
+		emit readyImage(frame);
 	}
+	emit readyImage(cv::Mat());
 
 	cap.release();
-	cv::destroyWindow(winName);
 }
 
 
 void recognizer::startMultiPredictFromCam()
 {
-	if (_t.joinable()) _t.join();
 	_isThreadRunning = true;
-	_t = std::thread(&recognizer::predictFromCam, this);
+	_t = std::thread(&recognizer::multiPredictFromCam, this);
 }
 
 
 void recognizer::stopMultiPredictFromCam()
 {
 	_isThreadRunning = false;
+	if (_t.joinable()) _t.join();
 }
 
 
@@ -213,8 +218,6 @@ void recognizer::multiPredictFromCam()
 
 	cv::Mat frame;
 	cv::VideoCapture cap(0);
-	std::string winName("Multi Predict");
-	cv::namedWindow(winName);
 
 	while (_isThreadRunning)
 	{
@@ -242,12 +245,12 @@ void recognizer::multiPredictFromCam()
 			cv::HersheyFonts font = cv::FONT_HERSHEY_SIMPLEX;
 			cv::putText(frame, s, cv::Point(face.x + 5, face.y - 5), font, 1, (0, 0, 255), 2);
 		}
-
-		cv::imshow(winName, frame);
+		
+		emit readyImage(frame);
 	}
+	emit readyImage(cv::Mat());
 
 	cap.release();
-	cv::destroyAllWindows();
 }
 
 /*

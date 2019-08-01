@@ -3,6 +3,7 @@
 #include "ui_qt_gui.h"
 #include "qtRecognizer.h"
 #include "names.h"
+#include "QImage"
 
 
 class qt_gui : public QMainWindow
@@ -11,10 +12,11 @@ class qt_gui : public QMainWindow
 
 public:
 	qt_gui(QWidget *parent = Q_NULLPTR);
-
+	~qt_gui();
 
 public slots:
-	void drawImage(const QImage &image);
+	void drawImage(cv::Mat frame);
+	void on_trainStop();
 
 private slots:
     void on_trainStart_clicked();

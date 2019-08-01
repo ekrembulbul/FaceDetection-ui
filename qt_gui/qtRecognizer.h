@@ -5,6 +5,7 @@
 #include <vector>
 #include <atomic>
 #include <QObject>
+#include <QImage>
 
 
 class recognizer : public QObject
@@ -29,9 +30,11 @@ public:
 	void stopMultiPredictFromCam();
 
 signals:
-	void readyImage(const QImage &image);
+	void readyImage(cv::Mat frame);
+	void signalStopTrain();
 
-	//void predictFromImage();
+public slots:
+	void stopTrain();
 
 private:
 	void takePicture(int userId);

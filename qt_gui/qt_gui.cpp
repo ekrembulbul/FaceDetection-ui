@@ -10,8 +10,17 @@ qt_gui::qt_gui(QWidget *parent)
 	: QMainWindow(parent), _isFirstInNameDialog(true)
 {
 	ui.setupUi(this);
-	//qRegisterMetaType<QImage>("QImage");
+	ui.videoLabel->setPixmap(QPixmap::fromImage(QImage("icon/camera.png")));
 	connect(&_r, &recognizer::readyImage, this, &qt_gui::drawImage);
+}
+
+
+qt_gui::~qt_gui()
+{
+	_r.stopTakePicture();
+	_r.stopPredictFromCam();
+	_r.stopMultiPredictFromCam();
+	_r.stopTrain();
 }
 
 
@@ -28,10 +37,17 @@ void qt_gui::on_takePictureStop_clicked()
 }
 
 
-void qt_gui::drawImage(const QImage &image)
+void qt_gui::drawImage(cv::Mat frame)
 {
 	qDebug() << __FUNCTION__" :" << GetCurrentThreadId();
-	ui.videoLabel->setPixmap(QPixmap::fromImage(image));                
+
+	if (!frame.empty())
+	{
+		cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
+		QImage image = QImage((uchar*)frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+		ui.videoLabel->setPixmap(QPixmap::fromImage(image));
+	}
+	else ui.videoLabel->setPixmap(QPixmap::fromImage(QImage("icon/camera.png")));
 }
 
 
@@ -39,6 +55,12 @@ void qt_gui::on_trainStart_clicked()
 {
 	int userId = ui.userIdInputTrain->value();
 	_r.startTrain(userId);
+}
+
+
+void qt_gui::on_trainStop()
+{
+
 }
 
 
