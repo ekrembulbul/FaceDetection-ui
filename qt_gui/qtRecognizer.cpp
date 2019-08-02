@@ -55,16 +55,16 @@ void recognizer::takePicture(int userId)
 
 	int count = 0;
 
-	int key = cv::waitKey(waitFrame);
+	cv::waitKey(waitFrame);
 	while (_isThreadRunning)
 	{
 		cap >> frame;
-		detectFace(frame, userId, count, key == spaceKey);
+		detectFace(frame, userId, count);
 
 		emit readyImage(frame);
 		                   
 
-		key = cv::waitKey(waitFrame);
+		cv::waitKey(waitFrame);
 	}
 
 	emit readyImage(cv::Mat());
@@ -295,7 +295,7 @@ void recognizer::predictFromImage()
 //private
 
 
-void recognizer::detectFace(cv::Mat &src, int id, int &count, bool saveFace)
+void recognizer::detectFace(cv::Mat &src, int id, int &count)
 {
 	cv::Mat gray;
 	cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
@@ -307,7 +307,7 @@ void recognizer::detectFace(cv::Mat &src, int id, int &count, bool saveFace)
 	{
 		cv::rectangle(src, face, cv::Scalar(0, 0, 255), 2);
 
-		if (saveFace)
+		if (_saveFace)
 		{
 			std::stringstream fileName;
 			fileName << "dataset/user" << id << "." << count << ".jpg";

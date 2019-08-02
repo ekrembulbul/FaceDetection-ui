@@ -84,6 +84,16 @@ void qt_gui::slotStateMultiPred()
 	setState(MULTI_PRED);
 }
 
+void qt_gui::mousePressEvent(QMouseEvent * event)
+{
+	if (event->button() == Qt::LeftButton) _r.setSaveFace(true);
+}
+
+void qt_gui::mouseReleaseEvent(QMouseEvent * event)
+{
+	if (event->button() == Qt::LeftButton) _r.setSaveFace(false);
+}
+
 
 void qt_gui::on_mTrainStart_clicked()
 {
@@ -177,6 +187,9 @@ void qt_gui::stateNormal()
 {
 	this->setCursor(Qt::ArrowCursor);
 	ui.centralWidget->setEnabled(true);
+	//ui.userIdInput->setEnabled(true);
+	//ui.userIdInputTrain->setEnabled(true);
+	//ui.userCountInMTrain->setEnabled(true);
 	setEnabledButtons(true);
 	stateInit();
 }
@@ -193,6 +206,9 @@ void qt_gui::stateTakePicture()
 {
 	setEnabledButtons(false);
 	ui.takePictureStop->setEnabled(true);
+	//ui.userIdInput->setEnabled(false);
+	//ui.userIdInputTrain->setEnabled(false);
+	//ui.userCountInMTrain->setEnabled(false);
 }
 
 

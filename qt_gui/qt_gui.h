@@ -4,6 +4,7 @@
 #include "qtRecognizer.h"
 #include "names.h"
 #include "QImage"
+#include "QKeyEvent"
 
 
 enum states { INIT, NORMAL, TAKE_PICTURE, DISABLE, PRED, MULTI_PRED };
@@ -23,15 +24,19 @@ public slots:
 	void slotStatePred();
 	void slotStateMultiPred();
 
+protected:
+	void mousePressEvent(QMouseEvent * event);
+	void mouseReleaseEvent(QMouseEvent * event);
+
 private slots:
-    void on_trainStart_clicked();
-    void on_mTrainStart_clicked();
-    void on_takePictureStop_clicked();
-    void on_takePictureStart_clicked();
-    void on_predCamStart_clicked();
-    void on_predCamStop_clicked();
-    void on_multiPredCamStart_clicked();
-    void on_multiPredCamStop_clicked();
+	void on_trainStart_clicked();
+	void on_mTrainStart_clicked();
+	void on_takePictureStop_clicked();
+	void on_takePictureStart_clicked();
+	void on_predCamStart_clicked();
+	void on_predCamStop_clicked();
+	void on_multiPredCamStart_clicked();
+	void on_multiPredCamStop_clicked();
 
 private:
 	Ui::qt_guiClass ui;

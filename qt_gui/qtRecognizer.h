@@ -28,6 +28,7 @@ public:
 	void stopPredictFromCam();
 	void startMultiPredictFromCam();
 	void stopMultiPredictFromCam();
+	void setSaveFace(const bool saveFace) { _saveFace = saveFace; };
 
 signals:
 	void readyImage(cv::Mat frame);
@@ -45,11 +46,12 @@ private:
 	void multiTrain(std::map<int, std::string> &idName);
 	void predictFromCam();
 	void multiPredictFromCam();
-	void detectFace(cv::Mat &src, int id, int &count, bool saveFace);
+	void detectFace(cv::Mat &src, int id, int &count);
 	void readPictures(int userId, int &count, pics_t &pics, labels_t &labels);
 	
 	cv::CascadeClassifier _faceCascade;
 	cv::Ptr<cv::face::FaceRecognizer> _model;
 	std::thread _t;
 	std::atomic<bool> _isThreadRunning;
+	bool _saveFace;
 };
